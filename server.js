@@ -1,7 +1,7 @@
 const express = require('express');
 // heroku pages
-// https://mighty-waters-18993.herokuapp.com/
-//  https://git.heroku.com/mighty-waters-18993.git
+// https://<your-app>.herokuapp.com/api/animals
+// https://mighty-waters-18993.herokuapp.com/api/animals
 
 
 
@@ -101,6 +101,7 @@ app.get('/api/animals', (req, res) => {
 
 // server listening function
 // Use default heroku port defined above
+// https://mighty-waters-18993.herokuapp.com/api/animals
 app.listen(PORT, () => {
     console.log(`API server now on port 3001!`);
   });
