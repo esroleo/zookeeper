@@ -32,7 +32,7 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-// *** Function to handle query *** //
+// *** Function to handle query for a set of animals that match criteria*** //
 function filterByQuery(query, animalsArray) {
     // Personality test 
     //http://localhost:3001/api/animals?name=Erica&personalityTraits=quirky&personalityTraits=rash
@@ -83,6 +83,12 @@ function filterByQuery(query, animalsArray) {
     return filteredResults;
   }
 
+// *** Function to handle query for a single animal return query *** //
+function findById(id, animalsArray) {
+const result = animalsArray.filter(animal => animal.id === id)[0];
+return result;
+}
+
 
 // *** Route added*** //
 app.get('/api/animals', (req, res) => {
@@ -96,6 +102,22 @@ app.get('/api/animals', (req, res) => {
       }
       res.json(results);
   });
+
+
+// *** Another Route with param - must go after the first one *** //
+// E.g We only want one specific animal, 
+// rather than an array of all the animals that match a query.
+
+app.get('/api/animals/:id', (req, res) => {
+    const result = findById(req.params.id, animals);
+    if (result) {
+      res.json(result);
+    } else {
+      res.sendStatus(404); // 404 error defined already
+    }
+  });
+
+
 
   
 
