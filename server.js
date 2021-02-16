@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 // heroku pages
 // https://<your-app>.herokuapp.com/api/animals
@@ -30,7 +32,15 @@ const { animals } = require('./data/animals');
 // *** Use default port of Heroku *** //
 const PORT = process.env.PORT || 3001;
 
+// *** Initialize our express application *** //
 const app = express();
+
+// parse incoming string or array data
+app.use(express.urlencoded({ extended: true }));
+// parse incoming JSON data
+app.use(express.json());
+
+
 
 // *** Function to handle query for a set of animals that match criteria*** //
 function filterByQuery(query, animalsArray) {
@@ -89,6 +99,49 @@ const result = animalsArray.filter(animal => animal.id === id)[0];
 return result;
 }
 
+// *** Validate data function *** //
+
+/*
+Now, in our POST route's callback before we create the data and add it to the catalog, 
+we'll pass our data through this function. In this case, the animal parameter is going 
+to be the content from req.body, and we're going to run its properties through a series 
+of validation checks. If any of them are false, we will return false and not create the animal data.
+*/
+
+function validateAnimal(animal) {
+  if (!animal.name || typeof animal.name !== 'string') {
+    return false;
+  }
+  if (!animal.species || typeof animal.species !== 'string') {
+    return false;
+  }
+  if (!animal.diet || typeof animal.diet !== 'string') {
+    return false;
+  }
+  if (!animal.personalityTraits || !Array.isArray(animal.personalityTraits)) {
+    return false;
+  }
+  return true;
+}
+
+
+// *** Function for POST *** //
+function createNewAnimal(body, animalsArray) {
+  //console.log(body);
+  const animal = body;
+  animalsArray.push(animal);
+  // our function's main code will go here!
+  fs.writeFileSync(
+    path.join(__dirname, './data/animals.json'),
+    JSON.stringify({ animals: animalsArray }, null, 2)
+  );
+  // return finished code to post route for response
+  return animal;
+}
+
+
+
+
 
 // *** Route added*** //
 app.get('/api/animals', (req, res) => {
@@ -104,7 +157,6 @@ app.get('/api/animals', (req, res) => {
   });
 
 
-// *** Another Route with param - must go after the first one *** //
 // E.g We only want one specific animal, 
 // rather than an array of all the animals that match a query.
 
@@ -118,14 +170,30 @@ app.get('/api/animals/:id', (req, res) => {
   });
 
 
+// *** Populate Data *** //
 
-  
+app.post('/api/animals', (req, res) => {
+  // req.body is where our incoming content will be
+  // lenght vs index.. lenght is +1 hence why the below works
+  req.body.id = animals.length.toString();
+  //console.log(req.body);
+
+  // if any data in req.body is incorrect, send 400 error back
+  if (!validateAnimal(req.body)) {
+    res.status(400).send('The animal is not properly formatted.');
+  } else {
+  // add animal to json file and animals array in this function
+  const animal = createNewAnimal(req.body, animals);
+  res.json(animal);
+  //res.json(req.body);
+  }
+});
 
 // server listening function
 // Use default heroku port defined above
 // https://mighty-waters-18993.herokuapp.com/api/animals
 app.listen(PORT, () => {
-    console.log(`API server now on port 3001!`);
+    console.log(`API server now on port 3001! https://mighty-waters-18993.herokuapp.com/api/animals`);
   });
 
 
