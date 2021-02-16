@@ -1,0 +1,26 @@
+{
+  "name": "zookeeper",
+  "version": "1.0.0",
+  "description": "Node.js Express.js server set up",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esroleo/zookeeper.git"
+  },
+  "keywords": [
+    "express.js"
+  ],
+  "author": "Esteban Romero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/esroleo/zookeeper/issues"
+  },
+  "homepage": "https://github.com/esroleo/zookeeper#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
