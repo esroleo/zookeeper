@@ -35,6 +35,9 @@ const PORT = process.env.PORT || 3001;
 // *** Initialize our express application *** //
 const app = express();
 
+// Create routes to serve any front-end asset *** //
+app.use(express.static('public'));
+
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
@@ -197,3 +200,7 @@ app.listen(PORT, () => {
   });
 
 
+// *** Server send ./public/index.html back to the client *** // 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
