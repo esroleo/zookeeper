@@ -45,9 +45,9 @@ app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
 
-// Routing 
-app.use('/api', apiRoutes);
-app.use('/', htmlRoutes);
+// Routing to our modular session
+app.use('/api', apiRoutes); // index.html on each folder will be read first
+app.use('/', htmlRoutes);  // index.html on each folder will be read first
 
 
 // *** Moved to lib animals.js ***
@@ -223,6 +223,7 @@ app.listen(PORT, () => {
 // });
 
 // Not used anymore after adding routes
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './public/index.html'));
 });
